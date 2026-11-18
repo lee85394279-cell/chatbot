@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>나이팅게일 AI | 내 생리 증상, 병원에 가야 할까?</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Pretendard & Noto Sans KR Web Fonts -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Pretendard', 'Noto Sans KR', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+          },
+          colors: {
+            pastel: {
+              pinkBg: '#FFF5F7',
+              pinkLight: '#FCE7F3',
+              pinkMain: '#F472B6',
+              pinkDark: '#DB2777',
+              purpleLight: '#F3E8FF',
+              purpleMain: '#A855F7',
+              purpleDark: '#7E22CE',
+            }
+          },
+          boxShadow: {
+            'soft': '0 10px 30px -5px rgba(244, 114, 182, 0.12), 0 4px 12px -2px rgba(168, 85, 247, 0.06)',
+            'card': '0 4px 20px -2px rgba(148, 163, 184, 0.08)',
+            'cta': '0 12px 28px -6px rgba(236, 72, 153, 0.42)',
+            'cta-hover': '0 18px 34px -6px rgba(168, 85, 247, 0.48)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+      background-color: #FFF9FB;
+      color: #1F2937;
+      scroll-behavior: smooth;
+    }
+
+    /* 부드러운 페이지 전환 애니메이션 */
+    .view-section {
+      animation: fadeSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes fadeSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* 일러스트 둥실둥실 애니메이션 */
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+    .animate-float {
+      animation: floatSlow 4.5s ease-in-out infinite;
+    }
+
+    /* CTA 버튼 빛 번짐 및 인터랙션 */
+    .cta-gradient-btn {
+      background: linear-gradient(135deg, #F472B6 0%, #EC4899 48%, #A855F7 100%);
+      background-size: 200% auto;
+      transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .cta-gradient-btn:hover {
+      background-position: right center;
+      transform: translateY(-3px) scale(1.015);
+    }
+    .cta-gradient-btn:active {
+      transform: translateY(0px) scale(0.985);
+    }
+
+    /* 챗봇 스크롤바 커스텀 */
+    .chat-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    .chat-scroll::-webkit-scrollbar-track {
+      background: #FFF5F7;
+      border-radius: 10px;
+    }
+    .chat-scroll::-webkit-scrollbar-thumb {
+      background: #FBCFE8;
+      border-radius: 10px;
+    }
+    .chat-scroll::-webkit-scrollbar-thumb:hover {
+      background: #F472B6;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-pink-200 selection:text-pink-900">
+
+  <!-- 상단 고정 헤더 & 네비게이션 바 -->
+  <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-pink-100/80 transition-all">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16 sm:h-20">
+        
+        <!-- 로고 및 서비스명 -->
+        <button onclick="navigateTo('home')" class="flex items-center gap-2.5 group focus:outline-none text-left">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-pink-100 via-pink-50 to-purple-100 border border-pink-200/70 flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
+            <!-- 초승달 + 하트 케어 심볼 SVG -->
+            <svg class="w-6 h-6" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M21.5 22.8C16.2 22.8 11.9 18.5 11.9 13.2C11.9 10.1 13.4 7.3 15.7 5.6C10.5 6.1 6.5 10.5 6.5 15.8C6.5 21.5 11.1 26.1 16.8 26.1C21.4 26.1 25.3 23.1 26.6 19C25.2 21.3 23.5 22.8 21.5 22.8Z" fill="url(#logoGrad1)"/>
+              <path d="M22.2 10.2C21.3 9.3 19.9 9.3 19 10.2L18.5 10.7L18 10.2C17.1 9.3 15.7 9.3 14.8 10.2C13.9 11.1 13.9 12.5 14.8 13.4L18.5 17.1L22.2 13.4C23.1 12.5 23.1 11.1 22.2 10.2Z" fill="#F472B6"/>
+              <defs>
+                <linearGradient id="logoGrad1" x1="6.5" y1="5.6" x2="26.6" y2="26.1" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#F472B6"/>
+                  <stop offset="1" stop-color="#A855F7"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <div>
+            <span class="font-bold text-lg sm:text-xl tracking-tight bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">나이팅게일 AI</span>
+            <span class="hidden sm:block text-[11px] text-gray-400 font-medium -mt-1">여성 건강 증상 체크 가이드</span>
+          </div>
+        </button>
+
+        <!-- 데스크탑 네비게이션 메뉴 -->
+        <nav class="hidden md:flex items-center space-x-2" aria-label="메인 메뉴">
+          <button onclick="navigateTo('home')" data-nav="home" class="nav-link px-4 py-2.5 rounded-xl text-sm font-semibold transition-all">
+            홈
+          </button>
+          <button onclick="navigateTo('chatbot')" data-nav="chatbot" class="nav-link px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-1.5">
+            <span>AI 증상 체크</span>
+            <span class="inline-block w-2 h-2 rounded-full bg-pink-500 animate-pulse"></span>
+          </button>
+          <button onclick="navigateTo('info')" data-nav="info" class="nav-link px-4 py-2.5 rounded-xl text-sm font-semibold transition-all">
+            생리 건강 정보
+          </button>
+          <button onclick="navigateTo('guide')" data-nav="guide" class="nav-link px-4 py-2.5 rounded-xl text-sm font-semibold transition-all">
+            이용 안내
+          </button>
+        </nav>
+
+        <!-- 데스크탑 우측 퀵 버튼 & 모바일 햄버거 버튼 -->
+        <div class="flex items-center gap-2">
+          <button onclick="navigateTo('chatbot')" class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold text-pink-600 bg-pink-50 hover:bg-pink-100 border border-pink-200/80 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+            </svg>
+            바로 상담하기
+          </button>
+
+          <!-- 모바일 햄버거 버튼 -->
+          <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="md:hidden p-2.5 rounded-xl text-gray-600 hover:bg-pink-50 hover:text-pink-600 focus:outline-none transition-colors" aria-label="메뉴 열기">
+            <svg id="menu-icon-open" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <svg id="menu-icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 모바일 드롭다운 네비게이션 -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-pink-100 px-4 pt-2 pb-4 space-y-1.5 shadow-lg">
+      <button onclick="navigateTo('home'); toggleMobileMenu(false)" data-nav-mobile="home" class="mobile-nav-link w-full text-left px-4 py-3 rounded-xl text-base font-semibold transition-colors">
+        홈
+      </button>
+      <button onclick="navigateTo('chatbot'); toggleMobileMenu(false)" data-nav-mobile="chatbot" class="mobile-nav-link w-full text-left px-4 py-3 rounded-xl text-base font-semibold transition-colors flex items-center justify-between">
+        <span>AI 증상 체크</span>
+        <span class="text-xs px-2 py-0.5 rounded-full bg-pink-100 text-pink-600 font-bold">챗봇 시작</span>
+      </button>
+      <button onclick="navigateTo('info'); toggleMobileMenu(false)" data-nav-mobile="info" class="mobile-nav-link w-full text-left px-4 py-3 rounded-xl text-base font-semibold transition-colors">
+        생리 건강 정보
+      </button>
+      <button onclick="navigateTo('guide'); toggleMobileMenu(false)" data-nav-mobile="guide" class="mobile-nav-link w-full text-left px-4 py-3 rounded-xl text-base font-semibold transition-colors">
+        이용 안내
+      </button>
+    </div>
+  </header>
+
+  <!-- 메인 콘텐츠 컨테이너 (SPA 뷰 전환 영역) -->
+  <main class="flex-grow">
+
+    <!-- =========================================================
+         VIEW 1: 홈 화면 (Home Page)
+    ========================================================== -->
+    <section id="view-home" class="view-section">
+      
+      <!-- 1. 메인 배너 (Hero Section - 스크롤 없이 첫 화면에 핵심 카피 & CTA 배치) -->
+      <div class="relative overflow-hidden bg-gradient-to-b from-[#FFF5F7] via-[#FDF4FF] to-[#FFF9FB] pt-8 pb-14 sm:pt-12 sm:pb-20 lg:pt-14 lg:pb-24 border-b border-pink-100/60">
+        <!-- 배경 장식 블러 원형 -->
+        <div class="absolute -top-24 -left-24 w-72 h-72 bg-pink-200/35 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute top-16 -right-24 w-80 h-80 bg-purple-200/35 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+            
+            <!-- 좌측 텍스트 및 핵심 CTA 영역 -->
+            <div class="lg:col-span-7 text-center lg:text-left space-y-5 sm:space-y-6">
+              <!-- 상단 신뢰 배지 -->
+              <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 border border-pink-200/80 shadow-sm text-xs sm:text-sm font-medium text-pink-700">
+                <span class="w-2 h-2 rounded-full bg-pink-500"></span>
+                <span>1분 만에 확인하는 맞춤형 여성 건강 체크</span>
+              </div>
+
+              <!-- 메인 카피 -->
+              <h1 class="text-3xl sm:text-4xl lg:text-[46px] font-extrabold text-gray-900 leading-[1.22] tracking-tight break-keep">
+                내 생리 증상,<br />
+                <span class="bg-gradient-to-r from-pink-500 via-pink-600 to-purple-600 bg-clip-text text-transparent">병원에 가야 할까?</span>
+              </h1>
+
+              <!-- 서브 카피 -->
+              <p class="text-base sm:text-lg text-gray-600 leading-relaxed max-w-xl mx-auto lg:mx-0 break-keep font-normal">
+                간단한 증상 입력으로 AI가 생리 관련 증상을 분석하고<br class="hidden sm:inline" />
+                병원 방문 필요성을 안내해드립니다.
+              </p>
+
+              <!-- 핵심 CTA 버튼 영역 -->
+              <div class="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5">
+                <button onclick="navigateTo('chatbot')" class="cta-gradient-btn w-full sm:w-auto px-8 py-4 sm:py-4.5 rounded-2xl text-white font-bold text-base sm:text-lg shadow-cta hover:shadow-cta-hover flex items-center justify-center gap-2.5 cursor-pointer">
+                  <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                  </svg>
+                  <span>AI 증상 체크 시작하기</span>
+                  <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </button>
+
+                <button onclick="navigateTo('info')" class="w-full sm:w-auto px-6 py-4 rounded-2xl bg-white hover:bg-purple-50/70 text-gray-700 hover:text-purple-700 font-semibold text-sm sm:text-base border border-purple-100 shadow-card transition-all">
+                  생리 건강 가이드 보기
+                </button>
+              </div>
+
+              <!-- 안심 포인트 미니 요약 -->
+              <div class="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-x-5 gap-y-2 text-xs sm:text-sm text-gray-500">
+                <span class="flex items-center gap-1.5">
+                  <svg class="w-4 h-4 text-pink-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                  회원가입 없이 무료 이용
+                </span>
+                <span class="flex items-center gap-1.5">
+                  <svg class="w-4 h-4 text-purple-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                  민감한 건강 정보 미저장
+                </span>
+              </div>
+            </div>
+
+            <!-- 우측 파스텔톤 커스텀 일러스트 영역 -->
+            <div class="lg:col-span-5 flex justify-center">
+              <div class="relative w-full max-w-[360px] sm:max-w-[400px] animate-float">
+                <!-- 부드러운 카드형 일러스트 프레임 -->
+                <div class="rounded-3xl bg-white/80 backdrop-blur-sm border border-pink-100 p-5 sm:p-6 shadow-soft">
+                  <svg viewBox="0 0 360 300" class="w-full h-auto" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="여성 생리 건강 케어 일러스트">
+                    <!-- 배경 파스텔 원형 오라 -->
+                    <circle cx="180" cy="150" r="118" fill="url(#heroBgCircle)" />
+                    <circle cx="275" cy="70" r="24" fill="#FCE7F3" opacity="0.8" />
+                    <circle cx="78" cy="220" r="18" fill="#F3E8FF" opacity="0.9" />
+
+                    <!-- 포근한 초승달 일러스트 -->
+                    <path d="M135 72C102 82 78 113 78 149C78 193 114 229 158 229C187 229 212 213 226 190C214 195 201 198 187 198C141 198 104 161 104 115C104 98 110 82 119 69C124 70 130 71 135 72Z" fill="url(#moonPastel)" />
+
+                    <!-- 중앙 케어 캘린더 & 하트 카드 -->
+                    <rect x="132" y="88" width="136" height="128" rx="22" fill="#FFFFFF" stroke="#FBCFE8" stroke-width="2.5" />
+                    <!-- 캘린더 상단 바 -->
+                    <path d="M132 110C132 97.8497 141.85 88 154 88H246C258.15 88 268 97.8497 268 110V120H132V110Z" fill="#FCE7F3" />
+                    <circle cx="164" cy="104" r="4" fill="#F472B6" />
+                    <circle cx="236" cy="104" r="4" fill="#A855F7" />
+
+                    <!-- 캘린더 내부 하트 & 체크 모티프 -->
+                    <path d="M200 144C194.5 138.5 185.5 138.5 180 144L177 147L174 144C168.5 138.5 159.5 138.5 154 144C148.5 149.5 148.5 158.5 154 164L177 187L200 164C205.5 158.5 205.5 149.5 200 144Z" fill="url(#heartGrad)" />
+                    
+                    <!-- 우측 미니 상태 바 -->
+                    <rect x="215" y="143" width="36" height="8" rx="4" fill="#F3E8FF" />
+                    <rect x="215" y="158" width="28" height="8" rx="4" fill="#FCE7F3" />
+                    <rect x="215" y="173" width="32" height="8" rx="4" fill="#E9D5FF" />
+
+                    <!-- 챗봇 말풍선 배지 (우측 하단) -->
+                    <g transform="translate(205, 188)">
+                      <rect x="0" y="0" width="96" height="44" rx="16" fill="url(#chatBadgeGrad)" />
+                      <circle cx="28" cy="22" r="4" fill="#FFFFFF" />
+                      <circle cx="48" cy="22" r="4" fill="#FFFFFF" />
+                      <circle cx="68" cy="22" r="4" fill="#FFFFFF" />
+                    </g>
+
+                    <!-- 부드러운 꽃잎 / 반짝이 장식 -->
+                    <path d="M275 112L278 120L286 123L278 126L275 134L272 126L264 123L272 120L275 112Z" fill="#F472B6" />
+                    <path d="M92 98L94 103L99 105L94 107L92 112L90 107L85 105L90 103L92 98Z" fill="#A855F7" />
+                    <circle cx="115" cy="245" r="5" fill="#F9A8D4" />
+                    <circle cx="255" cy="252" r="4" fill="#C084FC" />
+
+                    <defs>
+                      <radialGradient id="heroBgCircle" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(180 150) rotate(90) scale(118)">
+                        <stop stop-color="#FCE7F3" stop-opacity="0.75" />
+                        <stop offset="1" stop-color="#F3E8FF" stop-opacity="0.25" />
+                      </radialGradient>
+                      <linearGradient id="moonPastel" x1="78" y1="69" x2="226" y2="229" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#F9A8D4" />
+                        <stop offset="1" stop-color="#C084FC" />
+                      </linearGradient>
+                      <linearGradient id="heartGrad" x1="150" y1="140" x2="204" y2="187" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#F472B6" />
+                        <stop offset="1" stop-color="#EC4899" />
+                      </linearGradient>
+                      <linearGradient id="chatBadgeGrad" x1="0" y1="0" x2="96" y2="44" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#A855F7" />
+                        <stop offset="1" stop-color="#EC4899" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+
+                  <!-- 일러스트 하단 미니 상태 카드 -->
+                  <div class="mt-2 bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl p-3.5 border border-pink-100/80 flex items-center justify-between">
+                    <div class="flex items-center gap-2.5">
+                      <span class="w-8 h-8 rounded-xl bg-white flex items-center justify-center text-pink-500 shadow-xs font-bold text-sm">AI</span>
+                      <div>
+                        <p class="text-xs font-bold text-gray-800">맞춤형 증상 리포트</p>
+                        <p class="text-[11px] text-gray-500">통증·출혈량·주기 종합 분석</p>
+                      </div>
+                    </div>
+                    <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-white text-purple-600 border border-purple-100">
+                      안심 가이드
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. 서비스 이용 방법 (How It Works - 3단계 카드형 UI) -->
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20">
+        <div class="text-center max-w-2xl mx-auto mb-10 sm:mb-14">
+          <span class="inline-block px-3 py-1 rounded-full bg-purple-100/80 text-purple-700 text-xs font-bold tracking-wider uppercase mb-3">
+            HOW IT WORKS
+          </span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight break-keep">
+            복잡한 고민 없이 <span class="text-pink-600">3단계</span>로 확인하세요
+          </h2>
+          <p class="mt-3 text-sm sm:text-base text-gray-600 break-keep">
+            현재 겪고 있는 생리 증상을 선택하면 AI가 병원 방문 필요성과 관리 방법을 알기 쉽게 정리해 드립니다.
+          </p>
+        </div>
+
+        <!-- 3단계 카드 그리드 -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+          
+          <!-- STEP 01: 증상 입력 -->
+          <div class="group bg-white rounded-3xl p-7 sm:p-8 border border-pink-100/90 shadow-card hover:shadow-soft hover:-translate-y-1.5 transition-all duration-300 relative overflow-hidden">
+            <div class="flex items-center justify-between mb-6">
+              <span class="px-3 py-1 rounded-full bg-pink-50 text-pink-600 text-xs font-extrabold tracking-wide border border-pink-100">
+                STEP 01
+              </span>
+              <div class="w-12 h-12 rounded-2xl bg-pink-100/70 text-pink-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <!-- 체크리스트/입력 아이콘 -->
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+              </div>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2.5 flex items-center gap-2">
+              <span class="text-pink-500">①</span> 증상 입력
+            </h3>
+            <p class="text-gray-600 text-sm sm:text-[15px] leading-relaxed break-keep">
+              생리통 강도, 출혈량, 생리 주기 변화, 동반 증상 등을 간단한 선택지나 대화로 입력합니다.
+            </p>
+            <div class="mt-5 pt-4 border-t border-pink-50 flex flex-wrap gap-1.5">
+              <span class="text-[11px] px-2.5 py-1 rounded-lg bg-pink-50/80 text-pink-700 font-medium">#생리통강도</span>
+              <span class="text-[11px] px-2.5 py-1 rounded-lg bg-pink-50/80 text-pink-700 font-medium">#출혈량</span>
+              <span class="text-[11px] px-2.5 py-1 rounded-lg bg-pink-50/80 text-pink-700 font-medium">#주기변화</span>
+            </div>
+          </div>
+
+          <!-- STEP 02: AI 분석 -->
+          <div class="group bg-white rounded-3xl p-7 sm:p-8 border border-purple-100/90 shadow-card hover:shadow-soft hover:-translate-y-1.5 transition-all duration-300 relative overflow-hidden">
+            <div class="flex items-center justify-between mb-6">
+              <span class="px-3 py-1 rounded-full bg-purple-50 text-purple-600 text-xs font-extrabold tracking-wide border border-purple-100">
+                STEP 02
+              </span>
+              <div class="w-12 h-12 rounded-2xl bg-purple-100/70 text-purple-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <!-- AI 분석 스파크/프로세스 아이콘 -->
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+              </div>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2.5 flex items-center gap-2">
+              <span class="text-purple-500">②</span> AI 분석
+            </h3>
+            <p class="text-gray-600 text-sm sm:text-[15px] leading-relaxed break-keep">
+              입력한 증상 정보를 바탕으로 여성 건강 가이드라인에 따라 AI가 증상의 위험도와 패턴을 분석합니다.
+            </p>
+            <div class="mt-5 pt-4 border-t border-purple-50 flex flex-wrap gap-1.5">
+              <span class="text-[11px] px-2.5 py-1 rounded-lg bg-purple-50/80 text-purple-700 font-medium">#위험신호체크</span>
+              <span class="text-[11px] px-2.5 py-1 rounded-lg bg-purple-50/80 text-purple-700 font-medium">#증상패턴분석</span>
+            </div>
+          </div>
+
+          <!-- STEP 03: 결과 확인 -->
+          <div class="group bg-white rounded-3xl p-7 sm:p-8 border border-pink-100/90 shadow-card hover:shadow-soft hover:-translate-y-1.5 transition-all duration-300 relative overflow-hidden">
+            <div class="flex items-center justify-between mb-6">
+              <span class="px-3 py-1 rounded-full bg-gradient-to-r from-pink-50 to-purple-50 text-pink-700 text-xs font-extrabold tracking-wide border border-pink-100">
+                STEP 03
+              </span>
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-100 to-purple-100 text-pink-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <!-- 결과 리포트/하트 체크 아이콘 -->
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2.5 flex items-center gap-2">
+              <span class="text-pink-500">③</span> 결과 확인
+            </h3>
+            <p class="text-gray-600 text-sm sm:text-[15px] leading-relaxed break-keep">
+              병원 방문 필요성, 경과 관찰 및 생활 습관 개선 등 지금 나에게 필요한 맞춤형 안내를 확인합니다.
+            </p>
+            <div class="mt-5 pt-4 border-t border-pink-50 flex flex-wrap gap-1.5">
+              <span class="text-[11px] px-2.5 py-1 rounded-lg bg-pink-50/80 text-pink-700 font-medium">#병원방문권장여부</span>
+              <span class="text-[11px] px-2.5 py-1 rounded-lg bg-purple-50/80 text-purple-700 font-medium">#생활관리팁</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 하단 유도 배너 카드 -->
+        <div class="mt-12 sm:mt-16 rounded-3xl bg-gradient-to-r from-pink-100/70 via-purple-100/60 to-pink-100/70 p-6 sm:p-10 border border-pink-200/60 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div class="text-center md:text-left">
+            <h3 class="text-xl sm:text-2xl font-bold text-gray-900 break-keep">
+              지금 겪고 있는 증상이 평소와 다르신가요?
+            </h3>
+            <p class="mt-1.5 text-sm sm:text-base text-gray-600 break-keep">
+              혼자 걱정하지 마세요. AI 챗봇과 대화하며 내 몸의 신호를 차분히 점검해 보세요.
+            </p>
+          </div>
+          <button onclick="navigateTo('chatbot')" class="cta-gradient-btn shrink-0 px-7 py-3.5 rounded-2xl text-white font-bold text-sm sm:text-base shadow-cta cursor-pointer">
+            무료로 AI 증상 체크하기 →
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- =========================================================
+         VIEW 2: AI 증상 체크 챗봇 화면 (Interactive Chatbot)
+    ========================================================== -->
+    <section id="view-chatbot" class="view-section hidden py-8 sm:py-12">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6">
+        
+        <!-- 상단 안내 헤더 -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-100 text-pink-700 text-xs font-bold mb-2">
+              <span class="w-2 h-2 rounded-full bg-pink-500 animate-ping"></span>
+              나이팅게일 AI 증상 상담실
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">AI 생리 증상 체크</h2>
+            <p class="text-sm text-gray-500 mt-1">단계별 버튼을 선택하거나 증상을 직접 입력해 보세요.</p>
+          </div>
+          <button onclick="resetChat()" class="self-start sm:self-auto px-4 py-2 rounded-xl bg-white hover:bg-pink-50 text-gray-600 hover:text-pink-600 text-xs sm:text-sm font-semibold border border-gray-200 transition-colors flex items-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            처음부터 다시 체크
+          </button>
+        </div>
+
+        <!-- 진행 상태 바 -->
+        <div class="bg-white rounded-2xl p-4 border border-pink-100 shadow-xs mb-4">
+          <div class="flex justify-between text-xs font-semibold text-gray-500 mb-2">
+            <span id="chat-step-label">단계 1 / 4 : 통증 강도 확인</span>
+            <span id="chat-progress-text" class="text-pink-600">25%</span>
+          </div>
+          <div class="w-full h-2 bg-pink-50 rounded-full overflow-hidden">
+            <div id="chat-progress-bar" class="h-full bg-gradient-to-r from-pink-400 to-purple-500 rounded-full transition-all duration-500" style="width: 25%;"></div>
+          </div>
+        </div>
+
+        <!-- 메인 챗봇 컨테이너 카드 -->
+        <div class="bg-white rounded-3xl border border-pink-100 shadow-soft overflow-hidden flex flex-col h-[540px] sm:h-[580px]">
+          
+          <!-- 대화 내역 영역 -->
+          <div id="chat-messages" class="flex-1 p-5 sm:p-6 overflow-y-auto chat-scroll space-y-4 bg-gradient-to-b from-[#FFF9FB] to-white">
+            <!-- JS에서 초기 메시지 렌더링 -->
+          </div>
+
+          <!-- 빠른 응답 선택지 영역 -->
+          <div id="chat-quick-replies" class="px-5 py-3.5 bg-pink-50/50 border-t border-pink-100/80 flex flex-wrap gap-2">
+            <!-- JS에서 단계별 빠른 선택 버튼 렌더링 -->
+          </div>
+
+          <!-- 텍스트 입력 영역 -->
+          <form onsubmit="handleUserTextSubmit(event)" class="p-3.5 sm:p-4 bg-white border-t border-gray-100 flex items-center gap-2.5">
+            <input 
+              type="text" 
+              id="chat-input" 
+              placeholder="궁금한 증상을 직접 입력하셔도 됩니다 (예: 어지럽고 출혈이 너무 많아요)" 
+              class="flex-1 px-4 py-3 rounded-2xl bg-gray-50 focus:bg-white border border-gray-200 focus:border-pink-400 focus:outline-none text-sm transition-colors"
+            />
+            <button type="submit" class="px-5 py-3 rounded-2xl bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-semibold text-sm shadow-sm transition-all shrink-0 cursor-pointer">
+              전송
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =========================================================
+         VIEW 3: 생리 건강 정보 (Menstrual Health Info)
+    ========================================================== -->
+    <section id="view-info" class="view-section hidden py-10 sm:py-16">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <span class="inline-block px-3 py-1 rounded-full bg-pink-100 text-pink-700 text-xs font-bold mb-3">
+            HEALTH GUIDE
+          </span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">알아두면 좋은 생리 건강 정보</h2>
+          <p class="mt-3 text-sm sm:text-base text-gray-600 break-keep">
+            정상적인 생리 주기의 기준부터 병원을 꼭 방문해야 하는 위험 신호까지 한눈에 확인해 보세요.
+          </p>
+        </div>
+
+        <!-- 상단 2열 핵심 카드 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mb-8">
+          
+          <!-- 카드 1: 정상 생리 범위 기준 -->
+          <div class="bg-white rounded-3xl p-7 sm:p-8 border border-purple-100 shadow-card">
+            <div class="flex items-center gap-3 mb-5">
+              <div class="w-11 h-11 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-lg">
+                📅
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-gray-900">건강한 생리의 일반적 기준</h3>
+                <p class="text-xs text-gray-500">대한산부인과학회 참고 기준</p>
+              </div>
+            </div>
+            <ul class="space-y-3.5 text-sm sm:text-base text-gray-700">
+              <li class="flex items-start gap-3 p-3 rounded-2xl bg-purple-50/50">
+                <span class="font-bold text-purple-600 shrink-0">• 생리 주기:</span>
+                <span><strong>21일 ~ 35일</strong> 간격 (평균 28일, 매달 며칠 정도의 차이는 정상 범위입니다)</span>
+              </li>
+              <li class="flex items-start gap-3 p-3 rounded-2xl bg-purple-50/50">
+                <span class="font-bold text-purple-600 shrink-0">• 생리 기간:</span>
+                <span>보통 <strong>2일 ~ 7일</strong> 이내에 자연스럽게 종료</span>
+              </li>
+              <li class="flex items-start gap-3 p-3 rounded-2xl bg-purple-50/50">
+                <span class="font-bold text-purple-600 shrink-0">• 적정 출혈량:</span>
+                <span>한 주기당 약 20~80mL (하루 중형 패드 3~5개 교체 수준)</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- 카드 2: 병원 방문이 꼭 필요한 신호 (Red Flags) -->
+          <div class="bg-white rounded-3xl p-7 sm:p-8 border border-pink-200 shadow-card">
+            <div class="flex items-center gap-3 mb-5">
+              <div class="w-11 h-11 rounded-2xl bg-pink-100 text-pink-600 flex items-center justify-center font-bold text-lg">
+                🚨
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-gray-900">산부인과 방문을 권장하는 신호</h3>
+                <p class="text-xs text-pink-600 font-medium">아래 증상이 있다면 전문의 상담이 필요해요</p>
+              </div>
+            </div>
+            <ul class="space-y-3 text-sm sm:text-base text-gray-700">
+              <li class="flex items-start gap-2.5">
+                <span class="text-pink-500 font-bold">✓</span>
+                <span>진통제를 복용해도 <strong>일상생활이 불가능할 정도의 극심한 통증</strong>이 지속될 때</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <span class="text-pink-500 font-bold">✓</span>
+                <span>1~2시간마다 대형 패드가 흠뻑 젖거나, <strong>동전 크기 이상의 큰 핏덩어리</strong>가 반복될 때</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <span class="text-pink-500 font-bold">✓</span>
+                <span>임신 가능성이 없는데 <strong>3개월 이상 무월경</strong>이거나 주기가 21일 미만으로 너무 짧을 때</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <span class="text-pink-500 font-bold">✓</span>
+                <span>생리 기간이 아닌데 발생하는 <strong>부정출혈</strong>, 발열, 심한 어지럼증이 동반될 때</span>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+
+        <!-- 하단 3열 생활 케어 팁 카드 -->
+        <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-5">일상 속 생리통 완화 케어 팁</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-white rounded-3xl p-6 border border-pink-100 shadow-card">
+            <span class="text-2xl mb-3 block">🫖</span>
+            <h4 class="font-bold text-gray-900 mb-1.5">하복부 온열 찜질</h4>
+            <p class="text-sm text-gray-600 leading-relaxed">아랫배를 따뜻하게 유지하면 골반 주변 혈액순환이 원활해져 자궁 근육의 과도한 수축을 완화하는 데 도움이 됩니다.</p>
+          </div>
+          <div class="bg-white rounded-3xl p-6 border border-purple-100 shadow-card">
+            <span class="text-2xl mb-3 block">🧘‍♀️</span>
+            <h4 class="font-bold text-gray-900 mb-1.5">가벼운 스트레칭 & 휴식</h4>
+            <p class="text-sm text-gray-600 leading-relaxed">무리한 근력 운동보다는 골반 긴장을 풀어주는 가벼운 요가나 산책, 충분한 수면이 호르몬 밸런스 안정에 좋습니다.</p>
+          </div>
+          <div class="bg-white rounded-3xl p-6 border border-pink-100 shadow-card">
+            <span class="text-2xl mb-3 block">💊</span>
+            <h4 class="font-bold text-gray-900 mb-1.5">적절한 진통제 복용</h4>
+            <p class="text-sm text-gray-600 leading-relaxed">통증이 심해지기 전 초기에 용법에 맞춰 진통제를 복용하는 것이 효과적이며, 내성이 생기지는 않으니 안심하세요.</p>
+          </div>
+        </div>
+
+        <!-- 챗봇 유도 버튼 -->
+        <div class="mt-10 text-center">
+          <button onclick="navigateTo('chatbot')" class="cta-gradient-btn px-8 py-4 rounded-2xl text-white font-bold text-base shadow-cta cursor-pointer">
+            내 증상 AI로 직접 체크해보기
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =========================================================
+         VIEW 4: 이용 안내 (Service Guide & FAQ)
+    ========================================================== -->
+    <section id="view-guide" class="view-section hidden py-10 sm:py-16">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6">
+        
+        <div class="text-center mb-12">
+          <span class="inline-block px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-xs font-bold mb-3">
+            SERVICE GUIDE
+          </span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">나이팅게일 AI 이용 안내</h2>
+          <p class="mt-3 text-sm sm:text-base text-gray-600">
+            안전하고 신뢰할 수 있는 여성 건강 상담 보조 서비스를 위해 꼭 확인해 주세요.
+          </p>
+        </div>
+
+        <!-- 핵심 안내 카드 3종 -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
+          <div class="bg-white rounded-3xl p-6 border border-pink-100 shadow-card text-center">
+            <div class="w-12 h-12 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center mx-auto mb-4 text-xl">🩺</div>
+            <h3 class="font-bold text-gray-900 mb-2">의료 보조 안내 목적</h3>
+            <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">병원 방문 여부를 결정하기 어려운 순간, 객관적인 참고 기준을 제공하는 건강 가이드입니다.</p>
+          </div>
+          <div class="bg-white rounded-3xl p-6 border border-purple-100 shadow-card text-center">
+            <div class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center mx-auto mb-4 text-xl">🔒</div>
+            <h3 class="font-bold text-gray-900 mb-2">개인정보 비저장 원칙</h3>
+            <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">입력하신 생리 증상 및 대화 내용은 외부 서버에 저장되지 않으며 페이지를 닫으면 즉시 초기화됩니다.</p>
+          </div>
+          <div class="bg-white rounded-3xl p-6 border border-pink-100 shadow-card text-center">
+            <div class="w-12 h-12 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center mx-auto mb-4 text-xl">⚡</div>
+            <h3 class="font-bold text-gray-900 mb-2">응급 시 즉시 내원</h3>
+            <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">실신, 고열, 감당할 수 없는 하복부 급성 통증 시에는 챗봇 결과와 무관하게 즉시 응급실/병원을 방문하세요.</p>
+          </div>
+        </div>
+
+        <!-- 자주 묻는 질문 (FAQ 아코디언) -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-pink-100 shadow-card">
+          <h3 class="text-xl font-bold text-gray-900 mb-6">자주 묻는 질문 (FAQ)</h3>
+          <div class="space-y-3" id="faq-list">
+            
+            <div class="border border-gray-100 rounded-2xl overflow-hidden">
+              <button onclick="toggleFaq(0)" class="w-full px-5 py-4 text-left bg-pink-50/30 hover:bg-pink-50/70 flex justify-between items-center font-semibold text-gray-800 text-sm sm:text-base transition-colors">
+                <span>Q. AI 증상 체크 결과를 의학적 진단으로 볼 수 있나요?</span>
+                <span id="faq-icon-0" class="text-pink-500 font-bold text-lg transition-transform">+</span>
+              </button>
+              <div id="faq-ans-0" class="hidden px-5 py-4 text-sm text-gray-600 bg-white leading-relaxed border-t border-gray-100">
+                아니요. 본 서비스는 사용자가 입력한 증상을 바탕으로 산부인과 방문 필요성을 가늠할 수 있도록 돕는 참고용 정보 제공 서비스입니다. 정확한 원인 파악과 치료는 반드시 산부인과 전문의의 진료를 통해 받으셔야 합니다.
+              </div>
+            </div>
+
+            <div class="border border-gray-100 rounded-2xl overflow-hidden">
+              <button onclick="toggleFaq(1)" class="w-full px-5 py-4 text-left bg-pink-50/30 hover:bg-pink-50/70 flex justify-between items-center font-semibold text-gray-800 text-sm sm:text-base transition-colors">
+                <span>Q. 별도의 회원가입이나 비용이 필요한가요?</span>
+                <span id="faq-icon-1" class="text-pink-500 font-bold text-lg transition-transform">+</span>
+              </button>
+              <div id="faq-ans-1" class="hidden px-5 py-4 text-sm text-gray-600 bg-white leading-relaxed border-t border-gray-100">
+                모든 기능은 회원가입이나 로그인 없이 100% 무료로 즉시 이용하실 수 있습니다. 메인 화면의 'AI 증상 체크 시작하기' 버튼을 누르시면 바로 상담이 시작됩니다.
+              </div>
+            </div>
+
+            <div class="border border-gray-100 rounded-2xl overflow-hidden">
+              <button onclick="toggleFaq(2)" class="w-full px-5 py-4 text-left bg-pink-50/30 hover:bg-pink-50/70 flex justify-between items-center font-semibold text-gray-800 text-sm sm:text-base transition-colors">
+                <span>Q. 산부인과 방문 시 어떤 내용을 준비해 가면 좋나요?</span>
+                <span id="faq-icon-2" class="text-pink-500 font-bold text-lg transition-transform">+</span>
+              </button>
+              <div id="faq-ans-2" class="hidden px-5 py-4 text-sm text-gray-600 bg-white leading-relaxed border-t border-gray-100">
+                마지막 생리 시작일, 평소 생리 주기, 생리 기간, 하루 생리대 교체 개수, 통증이 시작된 시점과 복용한 진통제 종류 등을 메모해 가시면 진료에 큰 도움이 됩니다.
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================
+       하단 서비스 안내 (Footer)
+  ========================================================== -->
+  <footer class="bg-white border-t border-pink-100 mt-auto">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
+      
+      <!-- 필수 의료 안내 고지 박스 -->
+      <div class="rounded-2xl bg-gradient-to-r from-pink-50/90 to-purple-50/90 border border-pink-200/70 p-4 sm:p-5 mb-8 flex items-start sm:items-center gap-3.5">
+        <div class="w-9 h-9 rounded-xl bg-white text-pink-600 flex items-center justify-center shrink-0 shadow-xs">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <p class="text-xs sm:text-sm text-gray-700 font-medium leading-relaxed break-keep">
+          <strong class="text-pink-700">[의료 안내 및 주의사항]</strong> 본 서비스는 의료진의 진단을 대체하지 않으며, 증상에 대한 참고 정보를 제공하는 보조 서비스입니다. 증상이 심각하거나 지속될 경우 반드시 전문 의료기관을 방문하여 진료를 받으시기 바랍니다.
+        </p>
+      </div>
+
+      <!-- 푸터 하단 정보 -->
+      <div class="flex flex-col sm:flex-row justify-between items-center gap-4 text-xs sm:text-sm text-gray-500">
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-gray-800">나이팅게일 AI</span>
+          <span>|</span>
+          <span>여성 생리 증상 체크 및 건강관리 가이드</span>
+        </div>
+        <div class="flex flex-wrap justify-center gap-4">
+          <button onclick="navigateTo('home')" class="hover:text-pink-600 transition-colors">홈</button>
+          <button onclick="navigateTo('chatbot')" class="hover:text-pink-600 transition-colors">AI 증상 체크</button>
+          <button onclick="navigateTo('info')" class="hover:text-pink-600 transition-colors">생리 건강 정보</button>
+          <button onclick="navigateTo('guide')" class="hover:text-pink-600 transition-colors">이용 안내</button>
+        </div>
+      </div>
+      <p class="text-center sm:text-left text-[11px] text-gray-400 mt-4">
+        © 2026 Nightingale AI. All rights reserved. Designed for Women's Healthcare Support.
+      </p>
+    </div>
+  </footer>
+
+  <!-- =========================================================
+       JavaScript: SPA 라우팅, 챗봇 인터랙션, UI 컨트롤
+  ========================================================== -->
+  <script>
+    // 현재 활성화된 뷰 상태
+    let currentView = 'home';
+
+    /**
+     * 페이지(뷰) 전환 함수
+     * @param {string} viewName - 'home' | 'chatbot' | 'info' | 'guide'
+     */
+    function navigateTo(viewName) {
+      currentView = viewName;
+
+      // 모든 섹션 숨김 처리 후 선택된 섹션만 표시
+      const views = ['home', 'chatbot', 'info', 'guide'];
+      views.forEach(v => {
+        const el = document.getElementById(`view-${v}`);
+        if (el) {
+          if (v === viewName) {
+            el.classList.remove('hidden');
+            // 애니메이션 재실행 트릭
+            el.classList.remove('view-section');
+            void el.offsetWidth;
+            el.classList.add('view-section');
+          } else {
+            el.classList.add('hidden');
+          }
+        }
+      });
+
+      // 데스크탑 네비게이션 활성 스타일 업데이트
+      document.querySelectorAll('.nav-link').forEach(btn => {
+        if (btn.dataset.nav === viewName) {
+          btn.classList.add('bg-pink-50', 'text-pink-600');
+          btn.classList.remove('text-gray-600', 'hover:bg-gray-50', 'hover:text-pink-600');
+        } else {
+          btn.classList.remove('bg-pink-50', 'text-pink-600');
+          btn.classList.add('text-gray-600', 'hover:bg-gray-50', 'hover:text-pink-600');
+        }
+      });
+
+      // 모바일 네비게이션 활성 스타일 업데이트
+      document.querySelectorAll('.mobile-nav-link').forEach(btn => {
+        if (btn.dataset.navMobile === viewName) {
+          btn.classList.add('bg-pink-50', 'text-pink-600');
+          btn.classList.remove('text-gray-700');
+        } else {
+          btn.classList.remove('bg-pink-50', 'text-pink-600');
+          btn.classList.add('text-gray-700');
+        }
+      });
+
+      // 화면 상단으로 부드럽게 스크롤
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /**
+     * 모바일 햄버거 메뉴 토글
+     */
+    function toggleMobileMenu(forceState) {
+      const menu = document.getElementById('mobile-menu');
+      const openIcon = document.getElementById('menu-icon-open');
+      const closeIcon = document.getElementById('menu-icon-close');
+      
+      const isHidden = menu.classList.contains('hidden');
+      const shouldOpen = typeof forceState === 'boolean' ? forceState : isHidden;
+
+      if (shouldOpen) {
+        menu.classList.remove('hidden');
+        openIcon.classList.add('hidden');
+        closeIcon.classList.remove('hidden');
+      } else {
+        menu.classList.add('hidden');
+        openIcon.classList.remove('hidden');
+        closeIcon.classList.add('hidden');
+      }
+    }
+
+    /**
+     * FAQ 아코디언 토글
+     */
+    function toggleFaq(index) {
+      const ans = document.getElementById(`faq-ans-${index}`);
+      const icon = document.getElementById(`faq-icon-${index}`);
+      const isHidden = ans.classList.contains('hidden');
+
+      if (isHidden) {
+        ans.classList.remove('hidden');
+        icon.textContent = '−';
+      } else {
+        ans.classList.add('hidden');
+        icon.textContent = '+';
+      }
+    }
+
+    /* =========================================================
+       AI 증상 체크 챗봇 로직
+    ========================================================= */
+    const chatState = {
+      step: 0,
+      answers: {
+        pain: '',
+        bleeding: '',
+        cycle: '',
+        extra: ''
+      }
+    };
+
+    const chatQuestions = [
+      {
+        stepLabel: '단계 1 / 4 : 생리통 강도 확인',
+        progress: 25,
+        botText: '안녕하세요! 나이팅게일 AI입니다 🌸<br/>현재 겪고 계신 <strong>생리통의 강도</strong>는 어느 정도인가요?',
+        options: [
+          { label: '통증이 거의 없거나 가벼운 편이에요', value: 'mild', score: 0 },
+          { label: '진통제를 먹으면 일상생활이 가능해요', value: 'moderate', score: 1 },
+          { label: '진통제를 먹어도 너무 아프고 일상이 힘들어요', value: 'severe', score: 3 }
+        ]
+      },
+      {
+        stepLabel: '단계 2 / 4 : 생리 출혈량 확인',
+        progress: 50,
+        botText: '알겠습니다. 다음으로 <strong>출혈량이나 핏덩어리</strong> 상태는 어떤가요?',
+        options: [
+          { label: '평소와 비슷한 보통 양이에요', value: 'normal', score: 0 },
+          { label: '양은 좀 많지만 패드 교체로 감당돼요', value: 'heavy_mild', score: 1 },
+          { label: '1~2시간마다 대형 패드가 젖거나 큰 핏덩어리가 나와요', value: 'heavy_severe', score: 3 }
+        ]
+      },
+      {
+        stepLabel: '단계 3 / 4 : 생리 주기 변화 확인',
+        progress: 75,
+        botText: '최근 <strong>생리 주기나 기간</strong>에 눈에 띄는 변화가 있었나요?',
+        options: [
+          { label: '주기가 규칙적이고 7일 이내에 끝나요', value: 'regular', score: 0 },
+          { label: '최근 스트레스 등으로 며칠 정도 늦어졌어요', value: 'slight_delay', score: 1 },
+          { label: '부정출혈이 있거나 3개월 이상 생리를 안 했어요', value: 'irregular_severe', score: 3 }
+        ]
+      },
+      {
+        stepLabel: '단계 4 / 4 : 동반 증상 확인',
+        progress: 100,
+        botText: '마지막 질문이에요! 혹시 <strong>함께 나타나는 동반 증상</strong>이 있나요?',
+        options: [
+          { label: '특별한 동반 증상은 없어요', value: 'none', score: 0 },
+          { label: '가벼운 피로감, 허리 뻐근함, 부종이 있어요', value: 'common_pms', score: 1 },
+          { label: '심한 어지럼증, 구토, 발열, 식은땀이 동반돼요', value: 'warning_signs', score: 3 }
+        ]
+      }
+    ];
+
+    // 점수 합산용
+    let totalRiskScore = 0;
+
+    function initChat() {
+      chatState.step = 0;
+      totalRiskScore = 0;
+      const msgContainer = document.getElementById('chat-messages');
+      msgContainer.innerHTML = '';
+      renderBotStep(0);
+    }
+
+    function resetChat() {
+      initChat();
+    }
+
+    function renderBotStep(stepIdx) {
+      const q = chatQuestions[stepIdx];
+      updateProgressUI(q.stepLabel, q.progress);
+      appendMessage('bot', q.botText);
+      renderQuickOptions(q.options);
+    }
+
+    function updateProgressUI(label, percent) {
+      document.getElementById('chat-step-label').textContent = label;
+      document.getElementById('chat-progress-text').textContent = `${percent}%`;
+      document.getElementById('chat-progress-bar').style.width = `${percent}%`;
+    }
+
+    function appendMessage(sender, htmlContent) {
+      const container = document.getElementById('chat-messages');
+      const wrapper = document.createElement('div');
+
+      if (sender === 'bot') {
+        wrapper.className = 'flex items-start gap-3 max-w-[88%]';
+        wrapper.innerHTML = `
+          <div class="w-9 h-9 rounded-2xl bg-gradient-to-br from-pink-400 to-purple-500 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs mt-0.5">
+            AI
+          </div>
+          <div class="bg-white border border-pink-100 rounded-2xl rounded-tl-sm px-4 py-3.5 text-sm text-gray-800 leading-relaxed shadow-xs">
+            ${htmlContent}
+          </div>
+        `;
+      } else {
+        wrapper.className = 'flex justify-end';
+        wrapper.innerHTML = `
+          <div class="max-w-[82%] bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-2xl rounded-tr-sm px-4 py-3 text-sm leading-relaxed shadow-xs">
+            ${escapeHtml(htmlContent)}
+          </div>
+        `;
+      }
+
+      container.appendChild(wrapper);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function renderQuickOptions(options) {
+      const quickContainer = document.getElementById('chat-quick-replies');
+      quickContainer.innerHTML = '';
+
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'px-3.5 py-2 rounded-xl bg-white hover:bg-pink-100/80 text-pink-700 border border-pink-200 text-xs sm:text-sm font-medium transition-all shadow-2xs cursor-pointer text-left';
+        btn.textContent = opt.label;
+        btn.onclick = () => handleOptionSelect(opt);
+        quickContainer.appendChild(btn);
+      });
+    }
+
+    function handleOptionSelect(option) {
+      appendMessage('user', option.label);
+      totalRiskScore += option.score;
+
+      const quickContainer = document.getElementById('chat-quick-replies');
+      quickContainer.innerHTML = '<span class="text-xs text-gray-400 py-1">AI가 답변을 정리하고 있어요...</span>';
+
+      setTimeout(() => {
+        chatState.step += 1;
+        if (chatState.step < chatQuestions.length) {
+          renderBotStep(chatState.step);
+        } else {
+          showFinalAnalysis();
+        }
+      }, 450);
+    }
+
+    function handleUserTextSubmit(e) {
+      e.preventDefault();
+      const input = document.getElementById('chat-input');
+      const text = input.value.trim();
+      if (!text) return;
+
+      appendMessage('user', text);
+      input.value = '';
+
+      // 키워드 기반 위험도 가중치 분석
+      const highRiskKeywords = ['극심', '응급', '실신', '기절', '구토', '열', '부정출혈', '덩어리', '너무 많', '어지럽', '기절'];
+      const hasHighRisk = highRiskKeywords.some(kw => text.includes(kw));
+      if (hasHighRisk) {
+        totalRiskScore += 3;
+      } else {
+        totalRiskScore += 1;
+      }
+
+      const quickContainer = document.getElementById('chat-quick-replies');
+      quickContainer.innerHTML = '<span class="text-xs text-gray-400 py-1">입력하신 증상을 분석 중입니다...</span>';
+
+      setTimeout(() => {
+        if (chatState.step < chatQuestions.length - 1) {
+          chatState.step += 1;
+          renderBotStep(chatState.step);
+        } else {
+          showFinalAnalysis();
+        }
+      }, 500);
+    }
+
+    function showFinalAnalysis() {
+      updateProgressUI('분석 완료 : 맞춤형 건강 가이드', 100);
+      let resultHtml = '';
+
+      if (totalRiskScore >= 4) {
+        // 산부인과 방문 권장 결과 카드
+        resultHtml = `
+          <div class="space-y-3">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-100 text-rose-700 text-xs font-bold">
+              🏥 산부인과 전문의 방문 권장
+            </div>
+            <p class="font-bold text-gray-900 text-base">
+              입력하신 증상을 종합해 볼 때, 가까운 시일 내에 산부인과 진료를 받아보시는 것을 권장합니다.
+            </p>
+            <div class="p-3.5 rounded-xl bg-rose-50/70 border border-rose-100 text-xs sm:text-sm text-gray-700 space-y-1.5">
+              <p><strong>• 주요 확인 포인트:</strong> 일상생활이 어려운 통증, 과다 출혈(빈혈 위험), 부정출혈 또는 전신 동반 증상은 자궁내막증, 자궁근종, 호르몬 불균형 등의 신호일 수 있습니다.</p>
+              <p><strong>• 진료 전 준비 팁:</strong> 최근 생리 시작일과 증상 빈도를 간단히 메모해 가시면 정확한 상담에 도움이 됩니다.</p>
+            </div>
+            <p class="text-[11px] text-gray-400 pt-1">
+              ※ 본 안내는 참고용 정보이며 정확한 의학적 진단은 전문의 상담이 필요합니다.
+            </p>
+          </div>
+        `;
+      } else if (totalRiskScore >= 2) {
+        // 경과 관찰 및 주의 필요 결과 카드
+        resultHtml = `
+          <div class="space-y-3">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-bold">
+              🌷 경과 관찰 및 생활 관리 권장
+            </div>
+            <p class="font-bold text-gray-900 text-base">
+              현재는 충분한 휴식과 생활 관리를 병행하며 경과를 지켜보시는 것이 좋겠습니다.
+            </p>
+            <div class="p-3.5 rounded-xl bg-amber-50/60 border border-amber-100 text-xs sm:text-sm text-gray-700 space-y-1.5">
+              <p><strong>• 생활 관리 가이드:</strong> 하복부를 따뜻하게 해주는 온열 찜질, 충분한 수분 섭취, 무리한 일정 줄이기가 증상 완화에 도움이 됩니다.</p>
+              <p><strong>• 병원 방문 기준:</strong> 만약 다음 주기에도 같은 불편감이 반복되거나 통증·출혈량이 더 심해진다면 산부인과 검진을 권장합니다.</p>
+            </div>
+            <p class="text-[11px] text-gray-400 pt-1">
+              ※ 본 안내는 참고용 정보이며 증상 악화 시 전문의 진료를 받으세요.
+            </p>
+          </div>
+        `;
+      } else {
+        // 정상 범위 안심 결과 카드
+        resultHtml = `
+          <div class="space-y-3">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold">
+              ✨ 비교적 안정적인 생리 패턴입니다
+            </div>
+            <p class="font-bold text-gray-900 text-base">
+              현재 입력하신 내용 기준으로는 일반적인 생리 범위 내에 속하는 안정적인 상태입니다.
+            </p>
+            <div class="p-3.5 rounded-xl bg-emerald-50/60 border border-emerald-100 text-xs sm:text-sm text-gray-700 space-y-1.5">
+              <p><strong>• 건강 유지 팁:</strong> 규칙적인 수면과 가벼운 스트레칭을 유지하시고, 생리 주기를 꾸준히 기록해 두시면 앞으로의 건강 관리에 큰 도움이 됩니다.</p>
+            </div>
+            <p class="text-[11px] text-gray-400 pt-1">
+              ※ 정기적인 여성 건강 검진(연 1회 권장)을 통해 건강을 지켜주세요.
+            </p>
+          </div>
+        `;
+      }
+
+      appendMessage('bot', resultHtml);
+
+      // 완료 후 하단 버튼 제공
+      const quickContainer = document.getElementById('chat-quick-replies');
+      quickContainer.innerHTML = `
+        <button type="button" onclick="resetChat()" class="px-4 py-2 rounded-xl bg-pink-500 hover:bg-pink-600 text-white text-xs sm:text-sm font-semibold transition-colors cursor-pointer">
+          🔄 증상 다시 체크하기
+        </button>
+        <button type="button" onclick="navigateTo('info')" class="px-4 py-2 rounded-xl bg-white hover:bg-purple-50 text-purple-700 border border-purple-200 text-xs sm:text-sm font-semibold transition-colors cursor-pointer">
+          📖 생리 건강 정보 보러가기
+        </button>
+      `;
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    // 페이지 로드 시 초기화
+    window.addEventListener('DOMContentLoaded', () => {
+      navigateTo('home');
+      initChat();
+    });
+  </script>
+</body>
+</html>
